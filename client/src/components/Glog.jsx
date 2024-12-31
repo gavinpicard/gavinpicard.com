@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import CreatePost from './CreatePost';
+import '../styles/Glog.css';
 import axios from 'axios';
 
 function Glog() {
@@ -13,15 +15,17 @@ function Glog() {
   return (
     <div>
       <h1>Blog Posts</h1>
-      <ul>
+      <CreatePost />
+      <div className="posts-container">
         {posts.map(post => (
-          <li key={post._id}>
+          <div className="post-cover" key={post._id}>
+            <img src={`http://localhost:8080/${post.image}`}/>
             <h2>{post.title}</h2>
-            <p>{post.content}</p>
+            <p>{post.lead}</p>
             <p>By {post.author}</p>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

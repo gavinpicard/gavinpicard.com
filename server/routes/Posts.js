@@ -1,12 +1,28 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const Post = require('../models/Post');
 const router = express.Router();
 
-router.post('/posts', async (req, res) => {
-  const { title, content, author } = req.body;
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const filename = Date.now() + ext;
+    cb(null, filename);
+  }
+});
+
+const upload = multer({ storage });
+
+router.post('/posts', upload.single('image'), async (req, res) => {
+  const { title, lead, content, author } = req.body;
+  const filePath = req.file ? `uploads/${req.file.filename}` : null;
 
   try {
-    const newPost = new Post({ title, content, author });
+    const newPost = new Post({ image: filePath, title, lead, content, author });
     await newPost.save();
   } catch (err) {
     res.status(500).json({ message: err.message });

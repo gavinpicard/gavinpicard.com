@@ -1,0 +1,10 @@
+.posts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5rem;
+}
+
+
+.post-cover {
+  height: 10rem;
+}

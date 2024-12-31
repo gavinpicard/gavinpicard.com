@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 const postRoutes = require('./routes/Posts');
 require('dotenv').config();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json()); // Parse incoming JSON requests
 app.use(cors()); // Enable CORS for cross-origin requests
 app.use('/api', postRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
