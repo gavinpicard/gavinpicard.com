@@ -13,8 +13,24 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const PORT = process.env.PORT || 8080;
 
 // CORS configuration
+// Automatically include both www and non-www versions of the frontend URL
+const getAllowedOrigins = (url) => {
+  if (!url) return [];
+  const origins = [url];
+  
+  // Add www version if non-www, remove www if present
+  if (url.includes('://www.')) {
+    origins.push(url.replace('://www.', '://')); // Remove www
+  } else if (url.includes('://') && !url.includes('localhost')) {
+    // Add www for non-localhost URLs
+    origins.push(url.replace('://', '://www.'));
+  }
+  
+  return origins;
+};
+
 const allowedOrigins = [
-  FRONTEND_URL,
+  ...getAllowedOrigins(FRONTEND_URL),
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
