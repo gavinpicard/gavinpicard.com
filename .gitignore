@@ -59,7 +59,6 @@ server/check_schema.js
 # Markdown files (except README.md and deployment docs)
 *.md
 !README.md
-!DEPLOYMENT.md
 
 # Coverage reports
 coverage/
