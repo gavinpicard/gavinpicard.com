@@ -209,7 +209,7 @@ app.post('/posts', upload.single('image'), handleUploadError, (req, res) => {
     return res.status(401).json({ error: 'Unauthorized. Valid API key required.' });
   }
   
-  const { title, slug, content, tags } = req.body;
+  const { title, slug, lede, content, tags } = req.body;
   
   // Input validation
   const titleError = validateTitle(title);
@@ -241,8 +241,8 @@ app.post('/posts', upload.single('image'), handleUploadError, (req, res) => {
   // Store tags as JSON string (array of tag strings)
   const tagsJson = tags ? JSON.stringify(Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t)) : null;
   
-  db.query('INSERT INTO posts (title, slug, cover_path, content, tags) VALUES (?, ?, ?, ?, ?)', 
-    [title.trim(), slug ? slug.trim() : null, imagePath, content.trim(), tagsJson], 
+  db.query('INSERT INTO posts (title, slug, lede, cover_path, content, tags) VALUES (?, ?, ?, ?, ?, ?)', 
+    [title.trim(), slug ? slug.trim() : null, lede ? lede.trim() : null, imagePath, content.trim(), tagsJson], 
     (err, results) => {
       if (err) {
         console.error('Database error:', err);
@@ -260,7 +260,7 @@ app.put('/posts/:id', upload.single('image'), handleUploadError, (req, res) => {
   }
   
   const { id } = req.params;
-  const { title, slug, content, tags } = req.body;
+  const { title, slug, lede, content, tags } = req.body;
   
   // Input validation
   const titleError = validateTitle(title);
@@ -302,8 +302,8 @@ app.put('/posts/:id', upload.single('image'), handleUploadError, (req, res) => {
     // Store tags as JSON string (array of tag strings)
     const tagsJson = tags ? JSON.stringify(Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t)) : null;
     
-    db.query('UPDATE posts SET title = ?, slug = ?, cover_path = ?, content = ?, tags = ? WHERE id = ?', 
-      [title.trim(), slug ? slug.trim() : null, imagePath, content.trim(), tagsJson, id], 
+    db.query('UPDATE posts SET title = ?, slug = ?, lede = ?, cover_path = ?, content = ?, tags = ? WHERE id = ?', 
+      [title.trim(), slug ? slug.trim() : null, lede ? lede.trim() : null, imagePath, content.trim(), tagsJson, id], 
       (err, results) => {
         if (err) {
           console.error('Database error:', err);

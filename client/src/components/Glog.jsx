@@ -190,9 +190,9 @@ function Glog() {
                   <h3 className="text-2xl sm:text-3xl lg:text-xl xl:text-2xl font-bold text-custom-white leading-tight group-hover:text-teal transition-colors duration-300 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                     {truncate(post.title, 60)}
                   </h3>
-                  {post.slug && (
+                  {post.lede && (
                     <p className="text-sm sm:text-base lg:text-xs xl:text-sm text-custom-gray/95 leading-relaxed line-clamp-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                      {truncate(post.slug, 80)}
+                      {truncate(post.lede, 80)}
                     </p>
                   )}
                 </div>

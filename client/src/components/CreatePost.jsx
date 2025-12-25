@@ -12,6 +12,7 @@ function CreatePost() {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [lede, setLede] = useState('');
   const [content, setContent] = useState('# Test');
   const [tags, setTags] = useState('');
 
@@ -28,6 +29,7 @@ function CreatePost() {
     if (editingPost) {
       setTitle(editingPost.title || '');
       setSlug(editingPost.slug || '');
+      setLede(editingPost.lede || '');
       setContent(editingPost.content || '');
       if (editingPost.tags && Array.isArray(editingPost.tags)) {
         setTags(editingPost.tags.join(', '));
@@ -49,6 +51,7 @@ function CreatePost() {
     if (image) formData.append('image', image);
     formData.append('title', title);
     formData.append('slug', slug);
+    formData.append('lede', lede);
     formData.append('content', content);
     // Parse tags: split by comma, trim whitespace, filter empty strings
     const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t);
@@ -68,6 +71,7 @@ function CreatePost() {
         if (!isEditing) {
           setTitle('');
           setSlug('');
+          setLede('');
           setContent('# Test');
           setImage(null);
           setTags('');
@@ -131,6 +135,21 @@ function CreatePost() {
               onChange={e => setSlug(e.target.value)}
               className="w-full px-4 py-3 bg-background-secondary border border-background-tertiary rounded-lg text-custom-white placeholder-custom-gray focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-all text-sm sm:text-base"
             />
+            <p className="mt-2 text-xs text-custom-gray">URL-friendly identifier (e.g., "my-awesome-post")</p>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-custom-gray mb-2">
+              Lede
+            </label>
+            <input
+              type="text"
+              placeholder="A short summary or introduction to your post..."
+              value={lede}
+              onChange={e => setLede(e.target.value)}
+              className="w-full px-4 py-3 bg-background-secondary border border-background-tertiary rounded-lg text-custom-white placeholder-custom-gray focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-all text-sm sm:text-base"
+            />
+            <p className="mt-2 text-xs text-custom-gray">Short summary that appears under the title in previews</p>
           </div>
           
           <div>
