@@ -14,8 +14,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./setup_database.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    ports:
-      - "${DB_PORT:-3306}:3306"
+    # Port mapping removed - database is only accessible via Docker internal network
+    # The server container accesses it using hostname "db" and port 3306
     networks:
       - app-network
     healthcheck:
