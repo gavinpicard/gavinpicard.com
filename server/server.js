@@ -181,6 +181,50 @@ const validateContent = (content) => {
   return null;
 };
 
+// Helper function to parse tags from various input formats
+const parseTags = (tags) => {
+  if (!tags) return null;
+  
+  // If it's already an array, return it (cleaned)
+  if (Array.isArray(tags)) {
+    return tags.filter(t => t && typeof t === 'string' && t.trim()).map(t => t.trim());
+  }
+  
+  // If it's a string, check if it's JSON
+  if (typeof tags === 'string') {
+    const trimmed = tags.trim();
+    if (!trimmed) return null;
+    
+    // Try to parse as JSON first (in case someone sends JSON string or double-encoded JSON)
+    try {
+      let parsed = JSON.parse(trimmed);
+      
+      // Handle case where JSON parsing returns a string that might itself be JSON
+      if (typeof parsed === 'string' && parsed.trim().startsWith('[')) {
+        try {
+          parsed = JSON.parse(parsed);
+        } catch (e) {
+          // If second parse fails, treat the string as comma-separated
+        }
+      }
+      
+      // If we got an array from JSON parsing, return it
+      if (Array.isArray(parsed)) {
+        return parsed.filter(t => t && typeof t === 'string' && t.trim()).map(t => t.trim());
+      }
+    } catch (e) {
+      // Not JSON, will treat as comma-separated string below
+    }
+    
+    // Parse as comma-separated string (fallback for non-JSON strings)
+    return trimmed.split(',')
+      .map(t => t.trim())
+      .filter(t => t.length > 0);
+  }
+  
+  return null;
+};
+
 // Admin API key verification endpoint
 app.post('/admin/verify', (req, res) => {
   const apiKey = req.headers['x-api-key'] || req.headers['authorization']?.replace('Bearer ', '');
@@ -238,8 +282,9 @@ app.post('/posts', upload.single('image'), handleUploadError, (req, res) => {
     imagePath = `uploads/${req.file.filename}`;
   }
   
-  // Store tags as JSON string (array of tag strings)
-  const tagsJson = tags ? JSON.stringify(Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t)) : null;
+  // Parse and store tags as JSON string (array of tag strings)
+  const tagsArray = parseTags(tags);
+  const tagsJson = tagsArray && tagsArray.length > 0 ? JSON.stringify(tagsArray) : null;
   
   db.query('INSERT INTO posts (title, slug, lede, cover_path, content, tags) VALUES (?, ?, ?, ?, ?, ?)', 
     [title.trim(), slug ? slug.trim() : null, lede ? lede.trim() : null, imagePath, content.trim(), tagsJson], 
@@ -299,8 +344,9 @@ app.put('/posts/:id', upload.single('image'), handleUploadError, (req, res) => {
       imagePath = `uploads/${req.file.filename}`;
     }
     
-    // Store tags as JSON string (array of tag strings)
-    const tagsJson = tags ? JSON.stringify(Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t)) : null;
+    // Parse and store tags as JSON string (array of tag strings)
+    const tagsArray = parseTags(tags);
+    const tagsJson = tagsArray && tagsArray.length > 0 ? JSON.stringify(tagsArray) : null;
     
     db.query('UPDATE posts SET title = ?, slug = ?, lede = ?, cover_path = ?, content = ?, tags = ? WHERE id = ?', 
       [title.trim(), slug ? slug.trim() : null, lede ? lede.trim() : null, imagePath, content.trim(), tagsJson, id], 

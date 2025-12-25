@@ -53,9 +53,8 @@ function CreatePost() {
     formData.append('slug', slug);
     formData.append('lede', lede);
     formData.append('content', content);
-    // Parse tags: split by comma, trim whitespace, filter empty strings
-    const tagsArray = tags.split(',').map(t => t.trim()).filter(t => t);
-    formData.append('tags', JSON.stringify(tagsArray));
+    // Send tags as comma-separated string (server will parse and convert to JSON)
+    formData.append('tags', tags);
 
     const isEditing = !!editingPost;
     const endpoint = isEditing ? API_ENDPOINTS.UPDATE_POST(editingPost.id) : API_ENDPOINTS.POSTS;
@@ -163,7 +162,7 @@ function CreatePost() {
               onChange={e => setTags(e.target.value)}
               className="w-full px-4 py-3 bg-background-secondary border border-background-tertiary rounded-lg text-custom-white placeholder-custom-gray focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 transition-all text-sm sm:text-base"
             />
-            <p className="mt-2 text-xs text-custom-gray">Separate multiple tags with commas (e.g., #java, #politics)</p>
+            <p className="mt-2 text-xs text-custom-gray">Separate multiple tags with commas (e.g., java, politics, react)</p>
           </div>
           
           <div>
