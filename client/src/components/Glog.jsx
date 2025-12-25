@@ -137,6 +137,16 @@ function Glog() {
           </div>
         )}
         
+        {posts.length === 0 ? (
+          <div className="w-full py-16 sm:py-24 flex flex-col items-center justify-center text-center">
+            <p className="text-xl sm:text-2xl text-custom-gray mb-4">
+              No blog posts yet
+            </p>
+            <p className="text-base sm:text-lg text-custom-gray/80">
+              Posts are coming soon!
+            </p>
+          </div>
+        ) : (
         <div className="w-full space-y-8 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
         {posts.map(post => (
           <article
@@ -201,6 +211,7 @@ function Glog() {
           </article>
         ))}
         </div>
+        )}
 
         {/* Delete Confirmation Modal */}
         {showDeleteConfirm && (

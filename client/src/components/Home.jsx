@@ -244,6 +244,16 @@ function Home() {
               <ArrowRight className="w-4 h-4"/>
             </button>
           </div>
+           {posts.length === 0 ? (
+             <div className="w-full py-12 sm:py-16 flex flex-col items-center justify-center text-center">
+               <p className="text-lg sm:text-xl text-custom-gray mb-3">
+                 No blog posts yet
+               </p>
+               <p className="text-sm sm:text-base text-custom-gray/80">
+                 Posts are coming soon!
+               </p>
+             </div>
+           ) : (
            <div className="space-y-8 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
              {posts.slice(0, 4).map((post) => (
                <article
@@ -279,6 +289,7 @@ function Home() {
                </article>
              ))}
           </div>
+          )}
         </div>
         {/* Bottom spacing */}
         <div className="h-24 sm:h-32 md:h-40"></div>
