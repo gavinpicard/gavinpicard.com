@@ -99,6 +99,13 @@ jobs:
             # Pull latest images (optional, if using registry)
             # docker compose pull || true
             
+            # Enable maintenance mode
+            echo "Enabling maintenance mode..."
+            if [ -f /opt/gavinpicard/maintenance-toggle.sh ]; then
+                chmod +x /opt/gavinpicard/maintenance-toggle.sh
+                /opt/gavinpicard/maintenance-toggle.sh enable || true
+            fi
+            
             # Build and start containers
             echo "Building and starting containers..."
             docker compose down || true
@@ -110,6 +117,16 @@ jobs:
             # Build with no cache to ensure clean build
             docker compose build --no-cache --pull
             docker compose up -d
+            
+            # Wait for services to be healthy
+            echo "Waiting for services to start..."
+            sleep 10
+            
+            # Disable maintenance mode
+            echo "Disabling maintenance mode..."
+            if [ -f /opt/gavinpicard/maintenance-toggle.sh ]; then
+                /opt/gavinpicard/maintenance-toggle.sh disable || true
+            fi
             
             # Wait for services to be healthy
             echo "Waiting for services to start..."

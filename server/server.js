@@ -12,6 +12,16 @@ app.use(express.json());
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const PORT = process.env.PORT || 8080;
 
+app.use('/cellular', express.static(path.join(__dirname, '../client/public/cellular'), {
+  index: 'index.html',
+  fallthrough: false  // Don't fall through to next middleware if file not found
+}));
+
+// Handle SPA routing for /cellular - serve index.html for all routes
+app.get('/cellular/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/public/cellular', 'index.html'));
+});
+
 // CORS configuration
 // Automatically include both www and non-www versions of the frontend URL
 const getAllowedOrigins = (url) => {
